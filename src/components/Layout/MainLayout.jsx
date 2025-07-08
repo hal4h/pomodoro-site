@@ -6,16 +6,23 @@ import Shop from '../Shop/Shop';
 import Music from '../Music/Music';
 import Tasks from '../Tasks/Tasks';
 import { useApp } from '../../context/AppContext';
+import PastelColorPicker from '../BackgroundSelector/PastelColorPicker';
+import QuickShopModal from '../BackgroundSelector/QuickShopModal';
 
 const LayoutContainer = styled.div`
   display: flex;
+  width: 100vw;
+  height: 100vh;
   min-height: 100vh;
-  background: ${({ backgroundImage }) => 
-    backgroundImage ? `url(${backgroundImage})` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};
+  min-width: 100vw;
+  background: ${({ backgroundColor, backgroundImage }) =>
+    backgroundImage
+      ? `url(${backgroundImage})`
+      : backgroundColor};
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: background-image 0.5s ease-in-out;
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 const MainContent = styled.main`
@@ -23,30 +30,43 @@ const MainContent = styled.main`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  height: 100vh;
+  width: 100vw;
   position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(2px);
-  }
 `;
 
 const ContentWrapper = styled.div`
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 800px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const QuickShopButton = styled.button`
+  background: #fff;
+  color: #6366f1;
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 1.5rem 0 0.5rem 0;
+  box-shadow: 0 2px 8px rgba(99,102,241,0.07);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  &:hover {
+    background: #ffe3ec;
+    color: #222;
+  }
 `;
 
 const MainLayout = () => {
   const { state } = useApp();
+  const [showQuickShop, setShowQuickShop] = React.useState(false);
 
   const getBackgroundImage = () => {
     switch (state.selectedBackground) {
@@ -70,7 +90,14 @@ const MainLayout = () => {
   const renderContent = () => {
     switch (state.activeSection) {
       case 'timer':
-        return <Timer />;
+        return <>
+          <PastelColorPicker />
+          <QuickShopButton onClick={() => setShowQuickShop(true)}>
+            🎨 Quick Shop
+          </QuickShopButton>
+          {showQuickShop && <QuickShopModal onClose={() => setShowQuickShop(false)} />}
+          <Timer />
+        </>;
       case 'shop':
         return <Shop />;
       case 'music':
@@ -83,7 +110,7 @@ const MainLayout = () => {
   };
 
   return (
-    <LayoutContainer backgroundImage={getBackgroundImage()}>
+    <LayoutContainer backgroundColor={state.backgroundColor} backgroundImage={getBackgroundImage()}>
       <Sidebar />
       <MainContent>
         <ContentWrapper>

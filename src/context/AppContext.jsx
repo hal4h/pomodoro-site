@@ -10,6 +10,7 @@ const initialState = {
   points: 0,
   unlockedBackgrounds: ['default'],
   selectedBackground: 'default',
+  backgroundColor: '#f8e1e7', // default pastel
   tasks: [],
   activeSection: 'timer', // timer, shop, music, tasks
 };
@@ -29,6 +30,7 @@ const ACTIONS = {
   TOGGLE_TASK: 'TOGGLE_TASK',
   SET_ACTIVE_SECTION: 'SET_ACTIVE_SECTION',
   LOAD_FROM_STORAGE: 'LOAD_FROM_STORAGE',
+  SET_BACKGROUND_COLOR: 'SET_BACKGROUND_COLOR',
 };
 
 // Reducer function
@@ -101,6 +103,8 @@ const appReducer = (state, action) => {
         ...state,
         ...action.payload,
       };
+      case ACTIONS.SET_BACKGROUND_COLOR:
+    return { ...state, backgroundColor: action.payload };
     default:
       return state;
   }
@@ -132,6 +136,7 @@ export const AppProvider = ({ children }) => {
       points: state.points,
       unlockedBackgrounds: state.unlockedBackgrounds,
       selectedBackground: state.selectedBackground,
+      backgroundColor: state.backgroundColor,
       tasks: state.tasks,
     };
     localStorage.setItem('pomodoro-app', JSON.stringify(dataToSave));
@@ -159,6 +164,7 @@ export const AppProvider = ({ children }) => {
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
+
 
 // Custom hook to use the context
 export const useApp = () => {
