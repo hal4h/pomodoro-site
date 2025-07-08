@@ -13,6 +13,7 @@ const initialState = {
   backgroundColor: '#f8e1e7', // default pastel
   tasks: [],
   activeSection: 'timer', // timer, shop, music, tasks
+  selectedMusicTrack: null, // { id, name, embedUrl }
 };
 
 // Action types
@@ -31,6 +32,8 @@ const ACTIONS = {
   SET_ACTIVE_SECTION: 'SET_ACTIVE_SECTION',
   LOAD_FROM_STORAGE: 'LOAD_FROM_STORAGE',
   SET_BACKGROUND_COLOR: 'SET_BACKGROUND_COLOR',
+  SET_SELECTED_MUSIC_TRACK: 'SET_SELECTED_MUSIC_TRACK',
+  CLEAR_SELECTED_MUSIC_TRACK: 'CLEAR_SELECTED_MUSIC_TRACK',
 };
 
 // Reducer function
@@ -105,6 +108,10 @@ const appReducer = (state, action) => {
       };
       case ACTIONS.SET_BACKGROUND_COLOR:
     return { ...state, backgroundColor: action.payload };
+    case ACTIONS.SET_SELECTED_MUSIC_TRACK:
+      return { ...state, selectedMusicTrack: action.payload };
+    case ACTIONS.CLEAR_SELECTED_MUSIC_TRACK:
+      return { ...state, selectedMusicTrack: null };
     default:
       return state;
   }
@@ -138,9 +145,10 @@ export const AppProvider = ({ children }) => {
       selectedBackground: state.selectedBackground,
       backgroundColor: state.backgroundColor,
       tasks: state.tasks,
+      selectedMusicTrack: state.selectedMusicTrack,
     };
     localStorage.setItem('pomodoro-app', JSON.stringify(dataToSave));
-  }, [state.points, state.unlockedBackgrounds, state.selectedBackground, state.tasks]);
+  }, [state.points, state.unlockedBackgrounds, state.selectedBackground, state.backgroundColor, state.tasks, state.selectedMusicTrack]);
 
   // Timer effect
   useEffect(() => {

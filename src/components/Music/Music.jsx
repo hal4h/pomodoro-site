@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { FiMusic, FiPlus, FiPlay, FiPause } from 'react-icons/fi';
 import { useApp } from '../../context/AppContext';
 
 const MusicContainer = styled.div`
@@ -12,7 +11,6 @@ const MusicContainer = styled.div`
 const MusicHeader = styled.div`
   text-align: center;
   margin-bottom: 3rem;
-  
   h2 {
     font-size: 2.5rem;
     font-weight: 700;
@@ -22,225 +20,100 @@ const MusicHeader = styled.div`
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
   p {
     font-size: 1.1rem;
     color: rgba(255, 255, 255, 0.8);
   }
 `;
 
-const AddMusicSection = styled.div`
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-`;
-
-const InputGroup = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
-`;
-
-const Input = styled.input`
-  flex: 1;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  color: white;
-  font-size: 1rem;
-  
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-  }
-  
-  &:focus {
-    outline: none;
-    border-color: #6366f1;
-  }
-`;
-
-const Button = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: white;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const PlaylistGrid = styled.div`
+const TrackGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
 `;
 
-const PlaylistCard = styled.div`
+const TrackCard = styled.div`
   background: rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
   overflow: hidden;
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
-  
+  box-shadow: 0 2px 8px rgba(99,102,241,0.07);
+  position: relative;
+  outline: ${({ selected }) => (selected ? '2.5px solid #6366f1' : 'none')};
+`;
+
+const SelectButton = styled.button`
+  margin: 1rem auto 1rem auto;
+  display: block;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    background: #8b5cf6;
   }
 `;
 
-const SpotifyEmbed = styled.div`
-  width: 100%;
-  height: 352px;
-  border-radius: 0.5rem;
-  overflow: hidden;
-`;
-
-const PlaylistInfo = styled.div`
-  padding: 1.5rem;
-`;
-
-const PlaylistName = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: white;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const PlaylistDescription = styled.p`
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-`;
-
-const defaultPlaylists = [
+const tracks = [
   {
-    id: 1,
-    name: 'Focus & Concentration',
-    description: 'Instrumental music for deep work',
-    embedUrl: 'https://open.spotify.com/embed/playlist/37i9dQZF1DX8NTLI2TtZa6',
+    id: 'track1',
+    name: 'Study Podcast 1',
+    embedUrl: 'https://open.spotify.com/embed/episode/5vGcCCUIifZu9SNwbCV32M?utm_source=generator&theme=0',
   },
   {
-    id: 2,
-    name: 'Lo-Fi Study Beats',
-    description: 'Chill beats for studying and relaxation',
-    embedUrl: 'https://open.spotify.com/embed/playlist/37i9dQZF1DX8NTLI2TtZa6',
+    id: 'track2',
+    name: 'Study Podcast 2',
+    embedUrl: 'https://open.spotify.com/embed/episode/2hoxwSlc4S52rsgSnUPjcv?utm_source=generator&theme=0',
   },
   {
-    id: 3,
-    name: 'Nature Sounds',
-    description: 'Peaceful nature ambience',
-    embedUrl: 'https://open.spotify.com/embed/playlist/37i9dQZF1DX8NTLI2TtZa6',
+    id: 'track3',
+    name: 'Study Podcast 3',
+    embedUrl: 'https://open.spotify.com/embed/episode/1tP0wXxX5P2i9RdpD0N47w?utm_source=generator',
+  },
+  {
+    id: 'track4',
+    name: 'Study Podcast 4',
+    embedUrl: 'https://open.spotify.com/embed/episode/2dutRgYkiKDXBFbLleaCnf?utm_source=generator&theme=0',
   },
 ];
 
 const Music = () => {
-  const [playlists, setPlaylists] = useState(defaultPlaylists);
-  const [newPlaylistName, setNewPlaylistName] = useState('');
-  const [newPlaylistUrl, setNewPlaylistUrl] = useState('');
+  const { state, dispatch, actions } = useApp();
 
-  const addPlaylist = () => {
-    if (newPlaylistName && newPlaylistUrl) {
-      const newPlaylist = {
-        id: Date.now(),
-        name: newPlaylistName,
-        description: 'Custom playlist',
-        embedUrl: newPlaylistUrl,
-      };
-      setPlaylists([...playlists, newPlaylist]);
-      setNewPlaylistName('');
-      setNewPlaylistUrl('');
-    }
-  };
-
-  const extractSpotifyEmbedUrl = (url) => {
-    // Convert Spotify share URL to embed URL
-    if (url.includes('spotify.com/track/')) {
-      return url.replace('spotify.com/track/', 'open.spotify.com/embed/track/');
-    }
-    if (url.includes('spotify.com/playlist/')) {
-      return url.replace('spotify.com/playlist/', 'open.spotify.com/embed/playlist/');
-    }
-    if (url.includes('spotify.com/album/')) {
-      return url.replace('spotify.com/album/', 'open.spotify.com/embed/album/');
-    }
-    return url;
+  const handleSelect = (track) => {
+    dispatch({ type: actions.SET_SELECTED_MUSIC_TRACK, payload: track });
   };
 
   return (
     <MusicContainer>
       <MusicHeader>
         <h2>Music & Focus</h2>
-        <p>Enhance your productivity with curated playlists</p>
+        <p>Pick a track to play in the background while you study</p>
       </MusicHeader>
-      
-      <AddMusicSection>
-        <h3 style={{ marginBottom: '1rem', color: 'white' }}>Add Your Own Playlist</h3>
-        <InputGroup>
-          <Input
-            type="text"
-            placeholder="Playlist Name"
-            value={newPlaylistName}
-            onChange={(e) => setNewPlaylistName(e.target.value)}
-          />
-          <Input
-            type="url"
-            placeholder="Spotify URL or Embed URL"
-            value={newPlaylistUrl}
-            onChange={(e) => setNewPlaylistUrl(e.target.value)}
-          />
-          <Button onClick={addPlaylist}>
-            <FiPlus />
-            Add
-          </Button>
-        </InputGroup>
-        <p style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.6)' }}>
-           Tip: You can paste any Spotify track, playlist, or album URL
-        </p>
-      </AddMusicSection>
-      
-      <PlaylistGrid>
-        {playlists.map((playlist) => (
-          <PlaylistCard key={playlist.id}>
-            <SpotifyEmbed>
-              <iframe
-                src={extractSpotifyEmbedUrl(playlist.embedUrl)}
-                width="100%"
-                height="352"
-                frameBorder="0"
-                allow="encrypted-media"
-                title={playlist.name}
-              />
-            </SpotifyEmbed>
-            <PlaylistInfo>
-              <PlaylistName>
-                <FiMusic />
-                {playlist.name}
-              </PlaylistName>
-              <PlaylistDescription>{playlist.description}</PlaylistDescription>
-            </PlaylistInfo>
-          </PlaylistCard>
+      <TrackGrid>
+        {tracks.map((track) => (
+          <TrackCard key={track.id} selected={state.selectedMusicTrack && state.selectedMusicTrack.id === track.id}>
+            <iframe
+              style={{ borderRadius: '12px', width: '100%', minHeight: 152, border: 0 }}
+              src={track.embedUrl}
+              width="100%"
+              height="152"
+              frameBorder="0"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              title={track.name}
+            />
+            <SelectButton onClick={() => handleSelect(track)}>
+              {state.selectedMusicTrack && state.selectedMusicTrack.id === track.id ? 'Selected' : 'Select'}
+            </SelectButton>
+          </TrackCard>
         ))}
-      </PlaylistGrid>
+      </TrackGrid>
     </MusicContainer>
   );
 };

@@ -54,6 +54,17 @@ const UnlockButton = styled.button`
   cursor: pointer;
 `;
 
+const ShopContainer = styled.div`
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 3.5rem 2.5rem 2rem 2.5rem;
+  box-sizing: border-box;
+  @media (max-width: 600px) {
+    padding: 2.5rem 0.5rem 1rem 0.5rem;
+  }
+`;
+
 const pixelArtBackgrounds = [
   { id: 'background1', name: 'Mountain Sunset', description: 'Peaceful mountain landscape', imageUrl: 'https://ca.pinterest.com/pin/471681760989000148/', price: 50 },
   { id: 'background2', name: 'Ocean Waves', description: 'Calming ocean waves', imageUrl: 'https://ca.pinterest.com/pin/471681760989000170/', price: 75 },
@@ -126,12 +137,12 @@ const Shop = () => {
   );
 
   return (
-    <div style={{ width: '100%', padding: '2rem 0' }}>
+    <ShopContainer>
       <SectionTitle>Pixelated Art Backgrounds</SectionTitle>
       {renderRow(pixelArtBackgrounds)}
       <SectionTitle>Persian Rug Backgrounds</SectionTitle>
       {renderRow(persianRugBackgrounds)}
-    </div>
+    </ShopContainer>
   );
 };
 

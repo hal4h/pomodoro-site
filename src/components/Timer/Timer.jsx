@@ -21,7 +21,7 @@ const TimerDisplay = styled.div`
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   margin: 2rem 0 2.5rem 0;
   letter-spacing: 0.1em;
-  color: #fff;
+  color: rgb(127, 120, 120);
   text-shadow: none;
   @media (max-width: 768px) {
     font-size: 4rem;

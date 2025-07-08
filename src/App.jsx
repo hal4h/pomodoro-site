@@ -4,6 +4,7 @@ import { AppProvider } from './context/AppContext';
 import { theme } from './styles/theme';
 import GlobalStyle from './styles/GlobalStyle';
 import MainLayout from './components/Layout/MainLayout';
+import ActiveMusicPlayer from './components/BackgroundSelector/ActiveMusicPlayer';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <GlobalStyle />
       <AppProvider>
         <MainLayout />
+        <ActiveMusicPlayer />
       </AppProvider>
     </ThemeProvider>
   );
