@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useApp } from '../../context/AppContext';
+import { FiInfo } from 'react-icons/fi';
 
 const SectionTitle = styled.h2`
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin: 2.5rem 0 1rem 0;
   color: #6366f1;
@@ -12,10 +13,10 @@ const SectionTitle = styled.h2`
 
 const ScrollRow = styled.div`
   display: flex;
-  gap: 2rem;
+  gap: 0.7rem;
   overflow-x: auto;
-  padding-bottom: 1rem;
-  margin-bottom: 2rem;
+  padding-bottom: 0.4rem;
+  margin-bottom: 1rem;
 `;
 
 const BackgroundCard = styled.div`
@@ -54,20 +55,78 @@ const UnlockButton = styled.button`
   cursor: pointer;
 `;
 
-const ShopContainer = styled.div`
-  width: 100%;
-  margin: 0 auto;
-  padding: 0.2rem 0rem 1rem  1rem;
-  box-sizing: border-box;
-  @media (max-width: 600px) {
-    padding: 2.5rem 0.5rem 1rem 0.5rem;
+const ShopHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  position: relative;
+  z-index: 5;
+`;
+
+const PointsDisplay = styled.div`
+  background: rgba(255,255,255,0.1);
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  color: #f59e0b;
+  font-weight: 600;
+  font-size: 1.1rem;
+`;
+
+const InfoButton = styled.button`
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+  z-index: 10;
+  &:hover {
+    background: #8b5cf6;
   }
 `;
 
+const InfoModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  z-index: 1000;
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.2);
+  z-index: 999;
+`;
+
+const ShopContainer = styled.div`
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+`;
+
 const pixelArtBackgrounds = [
-  { id: 'background1', name: 'Mountain Sunset', description: 'Peaceful mountain landscape', imageUrl: 'https://ca.pinterest.com/pin/471681760989000148/', price: 50 },
-  { id: 'background2', name: 'Ocean Waves', description: 'Calming ocean waves', imageUrl: 'https://ca.pinterest.com/pin/471681760989000170/', price: 75 },
-  { id: 'background3', name: 'Forest Path', description: 'Serene forest path', imageUrl: 'https://ca.pinterest.com/pin/471681760989000152/', price: 100 },
+  { id: 'background1', name: 'Mountain Sunset', description: 'Peaceful mountain landscape', imageUrl: 'https://anasabdin.io/images/artworks/day-214-spantik-16-colors.gif', price: 50 },
+  { id: 'background2', name: 'Ocean Waves', description: 'Calming ocean waves', imageUrl: 'https://anasabdin.io/images/artworks/Botanical8colors.gif', price: 75 },
+  { id: 'background3', name: 'Forest Path', description: 'Serene forest path', imageUrl: 'https://anasabdin.io/images/artworks/stuck8colors.gif', price: 100 },
   { id: 'animated1', name: 'Animated Galaxy', description: 'Dynamic galaxy animation', imageUrl: 'https://i.pinimg.com/originals/05/e7/89/05e7899ab05dca0994697ee4ad30f105.gif', price: 150 },
   { id: 'animated2', name: 'Animated Ocean', description: 'Moving ocean waves animation', imageUrl: 'https://i.pinimg.com/originals/74/19/07/74190702dacafb832d8791ddbdbbaf7f.gif', price: 200 },
   { id: 'gif3', name: 'Pastel Library', description: 'Animated pastel library', imageUrl: 'https://i.pinimg.com/originals/f0/cf/30/f0cf30eec1d9d59c4ed229100a3c75d0.gif', price: 120 },
@@ -93,17 +152,18 @@ const persianRugBackgrounds = [
 ];
 
 const Shop = () => {
-  const { state, dispatch, actions } = useApp();
+  const { state, dispatch } = useApp();
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleUnlock = (backgroundId, price) => {
     if (state.points >= price) {
-      dispatch({ type: actions.UNLOCK_BACKGROUND, payload: backgroundId });
-      dispatch({ type: actions.ADD_POINTS, payload: -price });
+      dispatch({ type: 'UNLOCK_BACKGROUND', payload: backgroundId });
+      dispatch({ type: 'ADD_POINTS', payload: -price });
     }
   };
 
   const handleSelect = (backgroundId) => {
-    dispatch({ type: actions.SELECT_BACKGROUND, payload: backgroundId });
+    dispatch({ type: 'SELECT_BACKGROUND', payload: backgroundId });
   };
 
   const renderRow = (backgrounds) => (
@@ -136,12 +196,54 @@ const Shop = () => {
   );
 
   return (
-    <ShopContainer>
-      <SectionTitle>Pixel Art Backgrounds</SectionTitle>
-      {renderRow(pixelArtBackgrounds)}
-      <SectionTitle>Persian Rug Backgrounds</SectionTitle>
-      {renderRow(persianRugBackgrounds)}
-    </ShopContainer>
+    <>
+      <ShopContainer>
+        <ShopHeader>
+          <PointsDisplay>🎯 {state.points} points</PointsDisplay>
+          <InfoButton onClick={() => setShowInfo(true)}>
+            <FiInfo />
+          </InfoButton>
+        </ShopHeader>
+        <SectionTitle>Pixel Art Backgrounds</SectionTitle>
+        {renderRow(pixelArtBackgrounds)}
+        <SectionTitle>Persian Rug Backgrounds</SectionTitle>
+        {renderRow(persianRugBackgrounds)}
+      </ShopContainer>
+      
+      {showInfo && (
+        <ModalOverlay onClick={() => setShowInfo(false)}>
+          <InfoModal onClick={e => e.stopPropagation()}>
+            <h3 style={{ marginBottom: '1rem', color: '#6366f1' }}>About Pomoverse</h3>
+            <div style={{ lineHeight: '1.6', marginBottom: '1rem' }}>
+              <p><strong>What is Pomodoro?</strong></p>
+              <p>The Pomodoro Technique is a time management method that uses focused work sessions (typically 25 minutes) followed by short breaks. This helps maintain concentration and prevents burnout.</p>
+            </div>
+            <div style={{ lineHeight: '1.6' }}>
+              <p><strong>How to earn points:</strong></p>
+              <ul style={{ paddingLeft: '1.5rem' }}>
+                <li>Complete Pomodoro sessions (+10 points each)</li>
+                <li>Complete tasks (+5 points each)</li>
+                <li>Use the app regularly to build good habits</li>
+              </ul>
+            </div>
+            <button 
+              onClick={() => setShowInfo(false)}
+              style={{
+                background: '#6366f1',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '999px',
+                padding: '0.5rem 1.5rem',
+                marginTop: '1rem',
+                cursor: 'pointer'
+              }}
+            >
+              Got it!
+            </button>
+          </InfoModal>
+        </ModalOverlay>
+      )}
+    </>
   );
 };
 

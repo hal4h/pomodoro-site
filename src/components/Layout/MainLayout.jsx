@@ -62,7 +62,7 @@ const ContentWrapper = styled.div`
 
 const QuickShopButton = styled.button`
   background: #fff;
-  color: #6366f1;
+  color: ${({ accentColor }) => accentColor || '#6366f1'};
   border: none;
   border-radius: 999px;
   padding: 0.5rem 1.5rem;
@@ -73,14 +73,27 @@ const QuickShopButton = styled.button`
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
   &:hover {
-    background: #ffe3ec;
+    background: ${({ hoverColor }) => hoverColor || '#ffe3ec'};
     color: #222;
   }
 `;
 
 const MainLayout = () => {
-  const { state } = useApp();
+  const { state, dispatch } = useApp();
   const [showQuickShop, setShowQuickShop] = React.useState(false);
+
+  // Function to get darker version of current background color
+  const getDarkerAccentColor = (backgroundColor) => {
+    // Simple darkening logic - you can make this more sophisticated
+    if (backgroundColor.startsWith('#')) {
+      const hex = backgroundColor.slice(1);
+      const r = Math.max(0, parseInt(hex.substr(0, 2), 16) - 40);
+      const g = Math.max(0, parseInt(hex.substr(2, 2), 16) - 40);
+      const b = Math.max(0, parseInt(hex.substr(4, 2), 16) - 40);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+    return '#6366f1'; // fallback
+  };
 
   const getBackgroundImage = () => {
     switch (state.selectedBackground) {
@@ -106,7 +119,11 @@ const MainLayout = () => {
       case 'timer':
         return <>
           <PastelColorPicker />
-          <QuickShopButton onClick={() => setShowQuickShop(true)}>
+          <QuickShopButton 
+            onClick={() => setShowQuickShop(true)}
+            accentColor={getDarkerAccentColor(state.backgroundColor)}
+            hoverColor={state.backgroundColor}
+          >
             🎨 Quick Shop
           </QuickShopButton>
           {showQuickShop && <QuickShopModal onClose={() => setShowQuickShop(false)} />}

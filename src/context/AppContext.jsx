@@ -1,40 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-
-// Initial state
-const initialState = {
-  timer: {
-    isRunning: false,
-    time: 25 * 60, // 25 minutes in seconds
-    customTime: 25 * 60,
-  },
-  points: 0,
-  unlockedBackgrounds: ['default'],
-  selectedBackground: 'default',
-  backgroundColor: '#f8e1e7', // default pastel
-  tasks: [],
-  activeSection: 'timer', // timer, shop, music, tasks
-  selectedMusicTrack: null, // { id, name, embedUrl }
-};
-
-// Action types
-const ACTIONS = {
-  START_TIMER: 'START_TIMER',
-  STOP_TIMER: 'STOP_TIMER',
-  RESET_TIMER: 'RESET_TIMER',
-  UPDATE_TIMER: 'UPDATE_TIMER',
-  SET_CUSTOM_TIME: 'SET_CUSTOM_TIME',
-  ADD_POINTS: 'ADD_POINTS',
-  UNLOCK_BACKGROUND: 'UNLOCK_BACKGROUND',
-  SELECT_BACKGROUND: 'SELECT_BACKGROUND',
-  ADD_TASK: 'ADD_TASK',
-  REMOVE_TASK: 'REMOVE_TASK',
-  TOGGLE_TASK: 'TOGGLE_TASK',
-  SET_ACTIVE_SECTION: 'SET_ACTIVE_SECTION',
-  LOAD_FROM_STORAGE: 'LOAD_FROM_STORAGE',
-  SET_BACKGROUND_COLOR: 'SET_BACKGROUND_COLOR',
-  SET_SELECTED_MUSIC_TRACK: 'SET_SELECTED_MUSIC_TRACK',
-  CLEAR_SELECTED_MUSIC_TRACK: 'CLEAR_SELECTED_MUSIC_TRACK',
-};
+import { ACTIONS, initialState } from './constants';
 
 // Reducer function
 const appReducer = (state, action) => {
@@ -82,7 +47,22 @@ const appReducer = (state, action) => {
     case ACTIONS.ADD_TASK:
       return {
         ...state,
-        tasks: [...state.tasks, { id: Date.now(), text: action.payload, completed: false }],
+        tasks: [
+          ...state.tasks,
+          {
+            id: Date.now(),
+            text: action.payload.text,
+            completed: false,
+            dueDate: action.payload.dueDate || null,
+            reminder: action.payload.reminder || null,
+            tags: action.payload.tags || [],
+            subtasks: [],
+            notes: '',
+            attachments: [],
+            pomodoroCount: 0,
+            priority: action.payload.priority || 'normal',
+          },
+        ],
       };
     case ACTIONS.REMOVE_TASK:
       return {
@@ -94,6 +74,114 @@ const appReducer = (state, action) => {
         ...state,
         tasks: state.tasks.map(task =>
           task.id === action.payload ? { ...task, completed: !task.completed } : task
+        ),
+      };
+    case ACTIONS.UPDATE_TASK:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.id ? { ...task, ...action.payload.updates } : task
+        ),
+      };
+    case ACTIONS.ADD_SUBTASK:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId
+            ? { ...task, subtasks: [...task.subtasks, { id: Date.now(), text: action.payload.text, completed: false }] }
+            : task
+        ),
+      };
+    case ACTIONS.TOGGLE_SUBTASK:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId
+            ? {
+                ...task,
+                subtasks: task.subtasks.map(st =>
+                  st.id === action.payload.subtaskId ? { ...st, completed: !st.completed } : st
+                ),
+              }
+            : task
+        ),
+      };
+    case ACTIONS.REMOVE_SUBTASK:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId
+            ? { ...task, subtasks: task.subtasks.filter(st => st.id !== action.payload.subtaskId) }
+            : task
+        ),
+      };
+    case ACTIONS.ADD_TAG:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId
+            ? { ...task, tags: [...new Set([...task.tags, action.payload.tag])]} : task
+        ),
+      };
+    case ACTIONS.REMOVE_TAG:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId
+            ? { ...task, tags: task.tags.filter(tag => tag !== action.payload.tag) } : task
+        ),
+      };
+    case ACTIONS.SET_TASK_DUE_DATE:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId ? { ...task, dueDate: action.payload.dueDate } : task
+        ),
+      };
+    case ACTIONS.SET_TASK_REMINDER:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId ? { ...task, reminder: action.payload.reminder } : task
+        ),
+      };
+    case ACTIONS.SET_TASK_NOTES:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId ? { ...task, notes: action.payload.notes } : task
+        ),
+      };
+    case ACTIONS.ADD_ATTACHMENT:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId
+            ? { ...task, attachments: [...task.attachments, action.payload.attachment] }
+            : task
+        ),
+      };
+    case ACTIONS.REMOVE_ATTACHMENT:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId
+            ? { ...task, attachments: task.attachments.filter(att => att !== action.payload.attachment) }
+            : task
+        ),
+      };
+    case ACTIONS.INCREMENT_POMODORO_COUNT:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload ? { ...task, pomodoroCount: (task.pomodoroCount || 0) + 1 } : task
+        ),
+      };
+    case ACTIONS.SET_TASK_PRIORITY:
+      return {
+        ...state,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId ? { ...task, priority: action.payload.priority } : task
         ),
       };
     case ACTIONS.SET_ACTIVE_SECTION:
@@ -112,6 +200,17 @@ const appReducer = (state, action) => {
       return { ...state, selectedMusicTrack: action.payload };
     case ACTIONS.CLEAR_SELECTED_MUSIC_TRACK:
       return { ...state, selectedMusicTrack: null };
+    case ACTIONS.SET_CURRENT_TASK:
+      return { ...state, currentTaskId: action.payload };
+    case ACTIONS.CLEAR_CURRENT_TASK:
+      return { ...state, currentTaskId: null };
+    case ACTIONS.COMPLETE_TASK:
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.id === action.payload ? { ...task, completed: true } : task
+        ),
+      };
     default:
       return state;
   }
@@ -119,6 +218,15 @@ const appReducer = (state, action) => {
 
 // Create context
 const AppContext = createContext();
+
+// Custom hook to use the context
+export const useApp = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useApp must be used within an AppProvider');
+  }
+  return context;
+};
 
 // Provider component
 export const AppProvider = ({ children }) => {
@@ -146,9 +254,10 @@ export const AppProvider = ({ children }) => {
       backgroundColor: state.backgroundColor,
       tasks: state.tasks,
       selectedMusicTrack: state.selectedMusicTrack,
+      currentTaskId: state.currentTaskId,
     };
     localStorage.setItem('pomodoro-app', JSON.stringify(dataToSave));
-  }, [state.points, state.unlockedBackgrounds, state.selectedBackground, state.backgroundColor, state.tasks, state.selectedMusicTrack]);
+  }, [state.points, state.unlockedBackgrounds, state.selectedBackground, state.backgroundColor, state.tasks, state.selectedMusicTrack, state.currentTaskId]);
 
   // Timer effect
   useEffect(() => {
@@ -164,21 +273,20 @@ export const AppProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [state.timer.isRunning, state.timer.time]);
 
+  const setCurrentTask = (taskId) => {
+    dispatch({ type: ACTIONS.SET_CURRENT_TASK, payload: taskId });
+  };
+  const clearCurrentTask = () => {
+    dispatch({ type: ACTIONS.CLEAR_CURRENT_TASK });
+  };
+
   const value = {
     state,
     dispatch,
     actions: ACTIONS,
+    setCurrentTask,
+    clearCurrentTask,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
-};
-
-
-// Custom hook to use the context
-export const useApp = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useApp must be used within an AppProvider');
-  }
-  return context;
 };

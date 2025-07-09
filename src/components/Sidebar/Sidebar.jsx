@@ -106,7 +106,7 @@ const Sidebar = () => {
   return (
     <SidebarContainer>
       <Logo>
-        <h1>pomodoro</h1>
+      <h1>pomoverse</h1>
       </Logo>
       
       {navItems.map(({ id, label, icon: Icon }) => (

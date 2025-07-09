@@ -73,8 +73,7 @@ const ShopButton = styled.button`
 `;
 
 const QuickShopModal = ({ onClose }) => {
-  const { state, dispatch, actions } = useApp();
-  const navigate = useNavigate();
+  const { state, dispatch } = useApp();
 
   const unlockedBackgrounds = backgrounds.filter(bg => state.unlockedBackgrounds.includes(bg.id));
 
@@ -82,18 +81,24 @@ const QuickShopModal = ({ onClose }) => {
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={e => e.stopPropagation()}>
         <h3>Unlocked Backgrounds</h3>
-        <Thumbnails>
-          {unlockedBackgrounds.map(bg => (
-            <Thumb
-              key={bg.id}
-              src={bg.url}
-              selected={state.selectedBackground === bg.id}
-              onClick={() => dispatch({ type: actions.SELECT_BACKGROUND, payload: bg.id })}
-              alt="background preview"
-            />
-          ))}
-        </Thumbnails>
-        <ShopButton onClick={() => { onClose(); navigate('/shop'); }}>
+        {unlockedBackgrounds.length === 0 ? (
+          <div style={{ color: '#666', marginBottom: '1rem' }}>
+            No backgrounds unlocked yet
+          </div>
+        ) : (
+          <Thumbnails>
+            {unlockedBackgrounds.map(bg => (
+              <Thumb
+                key={bg.id}
+                src={bg.url}
+                selected={state.selectedBackground === bg.id}
+                onClick={() => dispatch({ type: 'SELECT_BACKGROUND', payload: bg.id })}
+                alt="background preview"
+              />
+            ))}
+          </Thumbnails>
+        )}
+        <ShopButton onClick={() => { onClose(); dispatch({ type: 'SET_ACTIVE_SECTION', payload: 'shop' }); }}>
           Buy more backgrounds
         </ShopButton>
       </ModalContent>

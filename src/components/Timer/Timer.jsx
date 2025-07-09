@@ -101,10 +101,21 @@ const ModeButton = styled(PillButton)`
 `;
 
 const Timer = () => {
-  const { state, dispatch, actions } = useApp();
-  const [showCustomInput, setShowCustomInput] = useState(false);
+  const { state, setCurrentTask, dispatch } = useApp();
   const [customMinutes, setCustomMinutes] = useState(25);
   const [mode, setMode] = useState('pomodoro');
+
+  // Function to get darker version of current background color
+  const getDarkerAccentColor = (backgroundColor) => {
+    if (backgroundColor.startsWith('#')) {
+      const hex = backgroundColor.slice(1);
+      const r = Math.max(0, parseInt(hex.substr(0, 2), 16) - 40);
+      const g = Math.max(0, parseInt(hex.substr(2, 2), 16) - 40);
+      const b = Math.max(0, parseInt(hex.substr(4, 2), 16) - 40);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+    return '#6366f1';
+  };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -113,33 +124,34 @@ const Timer = () => {
   };
 
   const handleStart = () => {
-    dispatch({ type: actions.START_TIMER });
+    dispatch({ type: 'START_TIMER' });
   };
 
   const handleStop = () => {
-    dispatch({ type: actions.STOP_TIMER });
+    dispatch({ type: 'STOP_TIMER' });
   };
 
   const handleReset = () => {
-    dispatch({ type: actions.RESET_TIMER });
+    dispatch({ type: 'RESET_TIMER' });
   };
 
   const handleCustomTime = () => {
     const newTime = customMinutes * 60;
-    dispatch({ type: actions.SET_CUSTOM_TIME, payload: newTime });
-    setShowCustomInput(false);
+    dispatch({ type: 'SET_CUSTOM_TIME', payload: newTime });
   };
 
   const handleMode = (selectedMode) => {
     setMode(selectedMode);
     if (selectedMode === 'pomodoro') {
-      dispatch({ type: actions.SET_CUSTOM_TIME, payload: 25 * 60 });
+      dispatch({ type: 'SET_CUSTOM_TIME', payload: 25 * 60 });
       setCustomMinutes(25);
     } else {
-      dispatch({ type: actions.SET_CUSTOM_TIME, payload: 5 * 60 });
+      dispatch({ type: 'SET_CUSTOM_TIME', payload: 5 * 60 });
       setCustomMinutes(5);
     }
   };
+
+  const currentTask = state.tasks.find(t => t.id === state.currentTaskId);
 
   return (
     <TimerContainer>
@@ -157,22 +169,38 @@ const Timer = () => {
           <StartButton onClick={handleStart}>start</StartButton>
         )}
         <PillButton onClick={handleReset}>reset</PillButton>
-        <PillButton onClick={() => setShowCustomInput(!showCustomInput)}>custom</PillButton>
       </ButtonRow>
-      {showCustomInput && (
-        <CustomTimeInput>
-          <label>minutes:</label>
-          <input
-            type="number"
-            min="1"
-            max="120"
-            value={customMinutes}
-            onChange={(e) => setCustomMinutes(parseInt(e.target.value) || 25)}
-            onKeyPress={(e) => e.key === 'Enter' && handleCustomTime()}
-          />
-          <StartButton onClick={handleCustomTime}>set time</StartButton>
-        </CustomTimeInput>
-      )}
+     
+      {/* Current Task Display */}
+      <div style={{ marginTop: '2rem', width: '100%', textAlign: 'center' }}>
+        {currentTask ? (
+          <div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 500, color: '#6366f1' }}>Current Task:</div>
+            <div style={{ fontSize: '1.1rem', margin: '0.5rem 0' }}>{currentTask.title || currentTask.text}</div>
+            <div style={{ color: '#aaa', fontSize: '0.95rem' }}>Due: {currentTask.dueDate ? new Date(currentTask.dueDate).toLocaleDateString() : 'No due date'}</div>
+          </div>
+        ) : (
+          <div>
+            <div style={{ color: '#aaa', fontSize: '1.1rem', marginBottom: '0.5rem' }}>No current task</div>
+            <button
+              style={{
+                background: '#ffe3ec',
+                color: getDarkerAccentColor(state.backgroundColor),
+                border: 'none',
+                borderRadius: '999px',
+                padding: '0.5rem 1.5rem',
+                fontSize: '1rem',
+                fontWeight: 500,
+                cursor: 'pointer',
+                marginRight: '0.5rem',
+              }}
+              onClick={() => dispatch({ type: 'SET_ACTIVE_SECTION', payload: 'tasks' })}
+            >
+              Go to Tasks
+            </button>
+          </div>
+        )}
+      </div>
     </TimerContainer>
   );
 };

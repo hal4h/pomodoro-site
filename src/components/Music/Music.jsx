@@ -76,6 +76,13 @@ const AddButton = styled.button`
   }
 `;
 
+const ErrorText = styled.div`
+  color: #ef4444;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  text-align: center;
+`;
+
 const TrackScrollRow = styled.div`
   display: flex;
   gap: 2rem;
@@ -117,6 +124,7 @@ const SelectButton = styled.button`
   }
 `;
 
+
 const defaultTracks = [
   {
     id: 'track1',
@@ -131,7 +139,7 @@ const defaultTracks = [
   {
     id: 'track3',
     name: 'Study Podcast 3',
-    embedUrl: 'https://open.spotify.com/embed/episode/1tP0wXxX5P2i9RdpD0N47w?utm_source=generator',
+    embedUrl: 'https://open.spotify.com/embed/episode/1tP0wXxX5P2i9RdpD0N47w?utm_source=generator&theme=0',
   },
   {
     id: 'track4',
@@ -141,28 +149,95 @@ const defaultTracks = [
 ];
 
 const Music = () => {
-  const { state, dispatch, actions } = useApp();
+  const { state, dispatch } = useApp();
   const [tracks, setTracks] = useState(defaultTracks);
   const [newTrackUrl, setNewTrackUrl] = useState('');
   const [newTrackName, setNewTrackName] = useState('');
+  const [urlError, setUrlError] = useState('');
+
+  const extractSpotifyEmbedUrl = (url) => {
+    try {
+      // Handle different Spotify URL formats
+      let trackId = '';
+      
+      if (url.includes('open.spotify.com/embed/')) {
+        // Already an embed URL, return as is
+        return url.includes('?utm_source=generator&theme=0') ? url : url + '?utm_source=generator&theme=0';
+      }
+      
+      if (url.includes('open.spotify.com/track/')) {
+        // Regular track URL
+        trackId = url.split('open.spotify.com/track/')[1].split('?')[0];
+        return `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`;
+      }
+      
+      if (url.includes('open.spotify.com/playlist/')) {
+        // Playlist URL
+        trackId = url.split('open.spotify.com/playlist/')[1].split('?')[0];
+        return `https://open.spotify.com/embed/playlist/${trackId}?utm_source=generator&theme=0`;
+      }
+      
+      if (url.includes('open.spotify.com/episode/')) {
+        // Episode URL
+        trackId = url.split('open.spotify.com/episode/')[1].split('?')[0];
+        return `https://open.spotify.com/embed/episode/${trackId}?utm_source=generator&theme=0`;
+      }
+      
+      if (url.includes('open.spotify.com/album/')) {
+        // Album URL
+        trackId = url.split('open.spotify.com/album/')[1].split('?')[0];
+        return `https://open.spotify.com/embed/album/${trackId}?utm_source=generator&theme=0`;
+      }
+      
+      // If no pattern matches, return null to indicate error
+      return null;
+    } catch (error) {
+      console.error('Error parsing Spotify URL:', error);
+      return null; // Return null if parsing fails
+    }
+  };
 
   const handleSelect = (track) => {
-    dispatch({ type: actions.SET_SELECTED_MUSIC_TRACK, payload: track });
+    dispatch({ type: 'SET_SELECTED_MUSIC_TRACK', payload: track });
   };
 
   const handleAddTrack = () => {
-    if (!newTrackUrl) return;
+    if (!newTrackUrl) {
+      setUrlError('Please enter a Spotify URL');
+      return;
+    }
+
+    const embedUrl = extractSpotifyEmbedUrl(newTrackUrl);
+    
+    if (!embedUrl) {
+      setUrlError('Please enter a valid Spotify URL (track, playlist, album, or episode)');
+      return;
+    }
+
+    // Clear any previous errors
+    setUrlError('');
+    
     const name = newTrackName || 'Custom Track';
+    
+    // Add new track to the beginning of the list
     setTracks([
-      ...tracks,
       {
         id: 'custom-' + Date.now(),
         name,
-        embedUrl: newTrackUrl,
+        embedUrl,
       },
+      ...tracks,
     ]);
     setNewTrackUrl('');
     setNewTrackName('');
+  };
+
+  const handleUrlChange = (e) => {
+    setNewTrackUrl(e.target.value);
+    // Clear error when user starts typing
+    if (urlError) {
+      setUrlError('');
+    }
   };
 
   return (
@@ -181,15 +256,16 @@ const Music = () => {
           />
           <Input
             type="url"
-            placeholder="Paste Spotify embed URL here"
+            placeholder="Paste any Spotify URL here"
             value={newTrackUrl}
-            onChange={e => setNewTrackUrl(e.target.value)}
+            onChange={handleUrlChange}
           />
           <AddButton onClick={handleAddTrack}>Add</AddButton>
         </InputRow>
         <div style={{ fontSize: '0.9rem', color: '#888' }}>
-          Paste a Spotify playlist or podcast embed link (click "Share" → "Embed")
+          Paste any Spotify URL (track, playlist, album, or episode) and we'll convert it to an embed
         </div>
+        {urlError && <ErrorText>{urlError}</ErrorText>}
       </AddMusicSection>
       <TrackScrollRow>
         {tracks.map((track) => (
