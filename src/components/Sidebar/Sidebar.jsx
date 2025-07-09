@@ -4,73 +4,92 @@ import { FiClock, FiShoppingBag, FiMusic, FiCheckSquare, FiStar } from 'react-ic
 import { useApp } from '../../context/AppContext';
 
 const SidebarContainer = styled.aside`
-  width: 280px;
-  background: rgba(42, 42, 42, 0.95);
-  backdrop-filter: blur(10px);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100px;
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(8px);
+  border-right: none;
   padding: 2rem 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  align-items: center;
+  gap: 2.5rem;
+  @media (max-width: 700px) {
+    width: 56px;
+    padding: 1rem 0;
+    gap: 1.2rem;
+  }
 `;
 
 const Logo = styled.div`
-  padding: 0 2rem 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  
+  margin-bottom: 2rem;
   h1 {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    letter-spacing: 0.05em;
+    color: #6366f1;
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    background-clip: unset;
   }
 `;
 
 const NavItem = styled.button`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 2rem;
-  background: ${({ active }) => active ? 'rgba(99, 102, 241, 0.2)' : 'transparent'};
+  gap: 0.3rem;
+  background: ${({ active }) => active ? '#ffe3ec' : 'transparent'};
   border: none;
-  color: ${({ active }) => active ? '#6366f1' : '#ffffff'};
+  color: ${({ active }) => active ? '#6366f1' : '#222'};
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.2s, color 0.2s;
   width: 100%;
-  text-align: left;
-  font-size: 1rem;
-  
+  text-align: center;
+  font-size: 0.95rem;
+  border-radius: 999px;
+  padding: 0.5rem 0;
+  margin-bottom: 1.5rem;
+  @media (max-width: 700px) {
+    font-size: 0.8rem;
+    padding: 0.3rem 0;
+  }
+  span, svg {
+    display: block;
+  }
+  @media (max-width: 700px) {
+    span {
+      display: none;
+    }
+  }
   &:hover {
-    background: rgba(99, 102, 241, 0.1);
+    background: #f8e1e7;
     color: #6366f1;
   }
-  
   svg {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
   }
 `;
 
 const PointsDisplay = styled.div`
   margin-top: auto;
-  padding: 1.5rem 2rem;
-  background: rgba(99, 102, 241, 0.1);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  
+  padding: 1rem 0;
+  background: none;
+  border-top: none;
+  text-align: center;
   .points-label {
-    font-size: 0.875rem;
-    color: #a1a1aa;
-    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-bottom: 0.2rem;
   }
-  
   .points-value {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #f59e0b;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.3rem;
+    justify-content: center;
   }
 `;
 
@@ -87,7 +106,7 @@ const Sidebar = () => {
   return (
     <SidebarContainer>
       <Logo>
-        <h1>Pomodoro</h1>
+      <h1>pomoverse</h1>
       </Logo>
       
       {navItems.map(({ id, label, icon: Icon }) => (

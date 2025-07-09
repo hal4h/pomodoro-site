@@ -12,6 +12,7 @@ const GlobalStyle = createGlobalStyle`
     background: #1a1a1a;
     color: #ffffff;
     overflow-x: hidden;
+    padding-top: 2.5re
   }
 
   #root {
