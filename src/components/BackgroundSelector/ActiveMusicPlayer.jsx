@@ -14,6 +14,13 @@ const PlayerContainer = styled.div`
   display: flex;
   align-items: center;
   width: 300px;
+  @media (max-width: 600px) {
+    width: 95vw;
+    right: 2vw;
+    left: 2vw;
+    bottom: 2vw;
+    padding: 0.4em 0.2em 0.4em 0.2em;
+  }
 `;
 
 const Iframe = styled.iframe`
@@ -22,7 +29,11 @@ const Iframe = styled.iframe`
   height: 152px;
   border: none;
   background: #fff;
-  frameBorder="0
+  @media (max-width: 600px) {
+    width: 70vw;
+    min-width: 120px;
+    height: 100px;
+  }
 `;
 
 const CloseButton = styled.button`

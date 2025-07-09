@@ -4,7 +4,7 @@ import { FiClock, FiShoppingBag, FiMusic, FiCheckSquare, FiStar } from 'react-ic
 import { useApp } from '../../context/AppContext';
 
 const SidebarContainer = styled.aside`
-  width: 80px;
+  width: 100px;
   background: rgba(255,255,255,0.5);
   backdrop-filter: blur(8px);
   border-right: none;
@@ -13,6 +13,11 @@ const SidebarContainer = styled.aside`
   flex-direction: column;
   align-items: center;
   gap: 2.5rem;
+  @media (max-width: 700px) {
+    width: 56px;
+    padding: 1rem 0;
+    gap: 1.2rem;
+  }
 `;
 
 const Logo = styled.div`
@@ -20,7 +25,7 @@ const Logo = styled.div`
   h1 {
     font-size: 1.1rem;
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     color: #6366f1;
     background: none;
     -webkit-background-clip: unset;
@@ -45,6 +50,18 @@ const NavItem = styled.button`
   border-radius: 999px;
   padding: 0.5rem 0;
   margin-bottom: 1.5rem;
+  @media (max-width: 700px) {
+    font-size: 0.8rem;
+    padding: 0.3rem 0;
+  }
+  span, svg {
+    display: block;
+  }
+  @media (max-width: 700px) {
+    span {
+      display: none;
+    }
+  }
   &:hover {
     background: #f8e1e7;
     color: #6366f1;
@@ -89,7 +106,7 @@ const Sidebar = () => {
   return (
     <SidebarContainer>
       <Logo>
-        <h1>Pomodoro</h1>
+        <h1>pomodoro</h1>
       </Logo>
       
       {navItems.map(({ id, label, icon: Icon }) => (

@@ -11,10 +11,8 @@ import QuickShopModal from '../BackgroundSelector/QuickShopModal';
 
 const LayoutContainer = styled.div`
   display: flex;
-  width: 100vw;
-  height: 100vh;
   min-height: 100vh;
-  min-width: 100vw;
+  width: 100vw;
   background: ${({ backgroundColor, backgroundImage }) =>
     backgroundImage
       ? `url(${backgroundImage})`
@@ -23,6 +21,11 @@ const LayoutContainer = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  @media (max-width: 900px) {
+    flex-direction: column;
+    width: 100vw;
+    min-height: 100vh;
+  }
 `;
 
 const MainContent = styled.main`
@@ -30,9 +33,16 @@ const MainContent = styled.main`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   position: relative;
+  padding-top: 2.5rem;
+  @media (max-width: 900px) {
+    padding: 1.5rem 0.5rem 1.5rem 0.5rem;
+    flex-direction: column;
+    min-height: 80vh;
+    width: 100vw;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -44,6 +54,10 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media (max-width: 900px) {
+    width: 100vw;
+    padding: 0 0.5rem;
+  }
 `;
 
 const QuickShopButton = styled.button`

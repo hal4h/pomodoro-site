@@ -56,9 +56,8 @@ const UnlockButton = styled.button`
 
 const ShopContainer = styled.div`
   width: 100%;
-  max-width: 1400px;
   margin: 0 auto;
-  padding: 3.5rem 2.5rem 2rem 2.5rem;
+  padding: 0.2rem 0rem 1rem  1rem;
   box-sizing: border-box;
   @media (max-width: 600px) {
     padding: 2.5rem 0.5rem 1rem 0.5rem;
@@ -138,7 +137,7 @@ const Shop = () => {
 
   return (
     <ShopContainer>
-      <SectionTitle>Pixelated Art Backgrounds</SectionTitle>
+      <SectionTitle>Pixel Art Backgrounds</SectionTitle>
       {renderRow(pixelArtBackgrounds)}
       <SectionTitle>Persian Rug Backgrounds</SectionTitle>
       {renderRow(persianRugBackgrounds)}
