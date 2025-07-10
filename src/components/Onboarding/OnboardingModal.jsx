@@ -35,7 +35,7 @@ const StepTitle = styled.h2`
 `;
 
 const StepDescription = styled.p`
-  color: #333;
+  color:rgb(108, 109, 149);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 `;
