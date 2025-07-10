@@ -35,7 +35,7 @@ const StepTitle = styled.h2`
 `;
 
 const StepDescription = styled.p`
-  color: #666;
+  color:rgb(108, 109, 149);
   line-height: 1.6;
   margin-bottom: 1.5rem;
 `;
@@ -66,7 +66,7 @@ const FeatureCard = styled.div`
   
   .description {
     font-size: 0.9rem;
-    color: #666;
+    color: #333;
   }
 `;
 
@@ -124,12 +124,12 @@ const OnboardingModal = ({ onComplete }) => {
   const steps = [
     {
       title: "welcome to pomoverse! :D",
-      description: "your beautiful, productive study companion that rewards you for the lock in session. time to focus and achieve your goals.",
+      description: "your productive study companion that rewards you for your lock in session. time to focus and achieve your goals.",
       content: (
         <FeatureGrid>
           <FeatureCard>
             <div className="icon">⏰</div>
-            <div className="title">Pomodoro Timer</div>
+            <div className="title">pomodoro timer</div>
             <div className="description">25-minute focused work sessions with breaks</div>
           </FeatureCard>
           <FeatureCard>
