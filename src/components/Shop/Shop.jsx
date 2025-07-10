@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useApp } from '../../context/AppContext';
+import { useAuth } from '../Auth/AuthProvider';
+import { backgroundService } from '../../services/supabaseService';
 import { FiInfo } from 'react-icons/fi';
 
 const SectionTitle = styled.h2`
@@ -144,26 +146,38 @@ const pixelArtBackgrounds = [
 
 const persianRugBackgrounds = [
   { id: 'rug1', name: 'Persian Rug 1', description: 'Classic Persian rug', imageUrl: 'https://i.pinimg.com/736x/13/19/b5/1319b57cecad2eb780e413f851c1eff1.jpg', price: 80 },
-  { id: 'rug2', name: 'Persian Rug 2', description: 'Elegant Persian rug', imageUrl: 'https://i.pinimg.com/736x/74/50/a7/7450a7a4ec496b819e2be7d7cfe7f000.jpg', price: 80 },
-  { id: 'rug3', name: 'Persian Rug 3', description: 'Red Persian rug', imageUrl: 'https://i.pinimg.com/736x/1f/af/af/1fafaf8d3d4e673a9c6ecf3dfc56b4c9.jpg', price: 80 },
-  { id: 'rug4', name: 'Persian Rug 4', description: 'Blue Persian rug', imageUrl: 'https://i.pinimg.com/736x/c7/5d/45/c75d4556532d65664f7b36356c219878.jpg', price: 80 },
-  { id: 'rug5', name: 'Persian Rug 5', description: 'Green Persian rug', imageUrl: 'https://i.pinimg.com/736x/b8/1a/fd/b81afda3c9426976561344e61a701d2b.jpg', price: 80 },
+  { id: 'rug2', name: 'Persian Rug 2', description: 'Blue Persian rug', imageUrl: 'https://i.pinimg.com/736x/74/50/a7/7450a7a4ec496b819e2be7d7cfe7f000.jpg', price: 80 },
+  { id: 'rug3', name: 'Persian Rug 3', description: 'Multi-colored Persian rug', imageUrl: 'https://i.pinimg.com/736x/1f/af/af/1fafaf8d3d4e673a9c6ecf3dfc56b4c9.jpg', price: 80 },
+  { id: 'rug4', name: 'Persian Rug 4', description: 'Pink Persian rug', imageUrl: 'https://i.pinimg.com/736x/c7/5d/45/c75d4556532d65664f7b36356c219878.jpg', price: 80 },
+  { id: 'rug5', name: 'Persian Rug 5', description: 'Swan Persian rug', imageUrl: 'https://i.pinimg.com/736x/b8/1a/fd/b81afda3c9426976561344e61a701d2b.jpg', price: 80 },
   { id: 'rug6', name: 'Persian Rug 6', description: 'Vintage Persian rug', imageUrl: 'https://i.pinimg.com/736x/86/6b/56/866b560bc3540177fcdfdd0fbd064d3a.jpg', price: 80 },
 ];
 
 const Shop = () => {
   const { state, dispatch } = useApp();
+  const { user } = useAuth();
   const [showInfo, setShowInfo] = useState(false);
 
-  const handleUnlock = (backgroundId, price) => {
+  const handleUnlock = async (backgroundId, price) => {
     if (state.points >= price) {
       dispatch({ type: 'UNLOCK_BACKGROUND', payload: backgroundId });
       dispatch({ type: 'ADD_POINTS', payload: -price });
+      
+      // Update database if user is authenticated
+      if (user) {
+        const updatedBackgrounds = [...state.unlockedBackgrounds, backgroundId];
+        await backgroundService.updateUnlockedBackgrounds(user.id, updatedBackgrounds);
+      }
     }
   };
 
-  const handleSelect = (backgroundId) => {
+  const handleSelect = async (backgroundId) => {
     dispatch({ type: 'SELECT_BACKGROUND', payload: backgroundId });
+    
+    // Update database if user is authenticated
+    if (user) {
+      await backgroundService.updateSelectedBackground(user.id, backgroundId);
+    }
   };
 
   const renderRow = (backgrounds) => (
@@ -176,7 +190,7 @@ const Shop = () => {
           <BackgroundCard key={bg.id}>
             <BackgroundPreview src={bg.imageUrl} alt={bg.name} />
             <BackgroundInfo>
-              <div style={{ fontWeight: 600 }}>{bg.name}</div>
+              <div style={{ fontWeight: 600, color: '#999'}}>{bg.name}</div>
               <div style={{ fontSize: '0.9rem', color: '#888', margin: '0.5rem 0' }}>{bg.description}</div>
               <div style={{ color: '#f59e0b', fontSize: '0.95rem' }}>{bg.price} points</div>
               {isUnlocked ? (

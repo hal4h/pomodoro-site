@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { auth } from '../../firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import AuthModal from './AuthModal';
+import { useAuth } from './AuthProvider';
+import LoginModal from './LoginModal';
 import { useApp } from '../../context/AppContext';
 
 const MenuContainer = styled.div`
@@ -47,27 +46,29 @@ const Button = styled.button`
 `;
 
 export default function UserMenu() {
-  const [user, setUser] = useState(null);
+  const { user, signOut } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const { state } = useApp();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return () => unsubscribe();
-  }, []);
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      console.error('Sign out error:', error);
+    }
+  };
 
   return (
     <MenuContainer>
       <Points>Points: {state.points}</Points>
       <UserName>
-        {user ? `Welcome, ${user.displayName || user.email}` : 'Welcome, Guest'}
+        {user ? `Welcome, ${user.email}` : 'Welcome, Guest'}
       </UserName>
       {user ? (
-        <Button onClick={() => signOut(auth)}>Log Out</Button>
+        <Button onClick={handleSignOut}>Log Out</Button>
       ) : (
         <Button onClick={() => setShowModal(true)}>Log In / Sign Up</Button>
       )}
-      {showModal && <AuthModal onClose={() => setShowModal(false)} />}
+      {showModal && <LoginModal onClose={() => setShowModal(false)} />}
     </MenuContainer>
   );
 }

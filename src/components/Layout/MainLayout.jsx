@@ -8,6 +8,7 @@ import Tasks from '../Tasks/Tasks';
 import { useApp } from '../../context/AppContext';
 import PastelColorPicker from '../BackgroundSelector/PastelColorPicker';
 import QuickShopModal from '../BackgroundSelector/QuickShopModal';
+import OnboardingModal from '../Onboarding/OnboardingModal';
 
 const LayoutContainer = styled.div`
   display: flex;
@@ -81,6 +82,20 @@ const QuickShopButton = styled.button`
 const MainLayout = () => {
   const { state, dispatch } = useApp();
   const [showQuickShop, setShowQuickShop] = React.useState(false);
+  const [showOnboarding, setShowOnboarding] = React.useState(false);
+
+  // Check if user needs onboarding (first time user)
+  React.useEffect(() => {
+    const hasCompletedOnboarding = localStorage.getItem('pomoverse-onboarding-complete');
+    if (!hasCompletedOnboarding) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem('pomoverse-onboarding-complete', 'true');
+    setShowOnboarding(false);
+  };
 
   // Function to get darker version of current background color
   const getDarkerAccentColor = (backgroundColor) => {
@@ -124,7 +139,7 @@ const MainLayout = () => {
             accentColor={getDarkerAccentColor(state.backgroundColor)}
             hoverColor={state.backgroundColor}
           >
-            🎨 Quick Shop
+            quick shop
           </QuickShopButton>
           {showQuickShop && <QuickShopModal onClose={() => setShowQuickShop(false)} />}
           <Timer />
@@ -148,6 +163,7 @@ const MainLayout = () => {
           {renderContent()}
         </ContentWrapper>
       </MainContent>
+      {showOnboarding && <OnboardingModal onComplete={handleOnboardingComplete} />}
     </LayoutContainer>
   );
 };

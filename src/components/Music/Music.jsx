@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useApp } from '../../context/AppContext';
+import { useAuth } from '../Auth/AuthProvider';
+import { musicService } from '../../services/supabaseService';
 
 const MusicContainer = styled.div`
   max-width: 900px;
@@ -150,10 +152,29 @@ const defaultTracks = [
 
 const Music = () => {
   const { state, dispatch } = useApp();
+  const { user } = useAuth();
   const [tracks, setTracks] = useState(defaultTracks);
   const [newTrackUrl, setNewTrackUrl] = useState('');
   const [newTrackName, setNewTrackName] = useState('');
   const [urlError, setUrlError] = useState('');
+
+  // Load tracks from database when user is authenticated
+  useEffect(() => {
+    if (user) {
+      const loadTracks = async () => {
+        const { data, error } = await musicService.getUserMusic(user.id);
+        if (!error && data) {
+          const dbTracks = data.map(track => ({
+            id: track.id,
+            name: track.track_name,
+            embedUrl: track.embed_url
+          }));
+          setTracks(dbTracks.length > 0 ? dbTracks : defaultTracks);
+        }
+      };
+      loadTracks();
+    }
+  }, [user]);
 
   const extractSpotifyEmbedUrl = (url) => {
     try {
@@ -218,16 +239,24 @@ const Music = () => {
     setUrlError('');
     
     const name = newTrackName || 'Custom Track';
+    const newTrack = {
+      id: 'custom-' + Date.now(),
+      name,
+      embedUrl,
+    };
     
     // Add new track to the beginning of the list
-    setTracks([
-      {
-        id: 'custom-' + Date.now(),
-        name,
-        embedUrl,
-      },
-      ...tracks,
-    ]);
+    const updatedTracks = [newTrack, ...tracks];
+    setTracks(updatedTracks);
+    
+    // Save to database if user is authenticated
+    if (user) {
+      musicService.addMusicTrack(user.id, {
+        name: newTrack.name,
+        embedUrl: newTrack.embedUrl
+      });
+    }
+    
     setNewTrackUrl('');
     setNewTrackName('');
   };
