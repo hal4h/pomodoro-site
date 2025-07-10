@@ -24,9 +24,9 @@ const SidebarContainer = styled.aside`
 const Logo = styled.div`
   margin-bottom: 2rem;
   h1 {
-    font-size: 1.1rem;
+    font-size: 0.7rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.03em;
     color: #6366f1;
     background: none;
     -webkit-background-clip: unset;
