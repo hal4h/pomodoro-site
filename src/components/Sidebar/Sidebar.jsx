@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { FiClock, FiShoppingBag, FiMusic, FiCheckSquare, FiStar } from 'react-icons/fi';
 import { useApp } from '../../context/AppContext';
 import { getDarkerShade } from '../../utils/colorUtils';
-import { getDarkerShade } from '../../utils/colorUtils';
 
 const SidebarContainer = styled.aside`
   width: 100px;
