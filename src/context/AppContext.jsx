@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { ACTIONS, initialState } from './constants';
+import { musicService, backgroundService } from '../services/supabaseService';
+import { useAuth } from '../components/Auth/AuthProvider';
 
 // Reducer function
 const appReducer = (state, action) => {
@@ -231,6 +233,7 @@ export const useApp = () => {
 // Provider component
 export const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
+  const { user } = useAuth();
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -258,6 +261,16 @@ export const AppProvider = ({ children }) => {
     };
     localStorage.setItem('pomodoro-app', JSON.stringify(dataToSave));
   }, [state.points, state.unlockedBackgrounds, state.selectedBackground, state.backgroundColor, state.tasks, state.selectedMusicTrack, state.currentTaskId]);
+
+  // Sync backgrounds with database when user is authenticated
+  useEffect(() => {
+    if (user) {
+      // Update unlocked backgrounds in database
+      backgroundService.updateUnlockedBackgrounds(user.id, state.unlockedBackgrounds);
+      // Update selected background in database
+      backgroundService.updateSelectedBackground(user.id, state.selectedBackground);
+    }
+  }, [user, state.unlockedBackgrounds, state.selectedBackground]);
 
   // Timer effect
   useEffect(() => {

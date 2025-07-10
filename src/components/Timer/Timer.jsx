@@ -54,8 +54,15 @@ const PillButton = styled.button`
 const StartButton = styled(PillButton)`
   background: #fff;
   color: #222;
-  font-size: 1.1rem;
-  margin-top: 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: none;
+  &:hover {
+    background: #ffe3ec;
+  }
 `;
 
 const CustomTimeInput = styled.div`
