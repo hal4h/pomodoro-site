@@ -7,7 +7,7 @@ import GlobalStyle from './styles/GlobalStyle';
 import MainLayout from './components/Layout/MainLayout';
 import ActiveMusicPlayer from './components/BackgroundSelector/ActiveMusicPlayer';
 import UserMenu from './components/Auth/UserMenu';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/react"
 
 
 function App() {
