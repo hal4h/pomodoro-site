@@ -32,6 +32,7 @@ const Logo = styled.div`
     -webkit-background-clip: unset;
     -webkit-text-fill-color: unset;
     background-clip: unset;
+    text-align: center;
   }
 `;
 
