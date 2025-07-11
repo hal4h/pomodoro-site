@@ -5,17 +5,17 @@ import { useApp } from '../../context/AppContext';
 import { getDarkerShade } from '../../utils/colorUtils';
 
 const SidebarContainer = styled.aside`
-  width: ${({ isShopPage }) => isShopPage ? '120px' : '100px'};
+  width: 100px;
   background: rgba(255,255,255,0.5);
   backdrop-filter: blur(8px);
   border-right: none;
   padding: 2rem 0;
   display: flex;
-  flex-direction: column;
+  flex-direction: column;git a
   align-items: center;
   gap: 2.5rem;
   @media (max-width: 700px) {
-    width: ${({ isShopPage }) => isShopPage ? '80px' : '56px'};
+    width: 56px;
     padding: 1rem 0;
     gap: 1.2rem;
   }
@@ -105,7 +105,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <SidebarContainer isShopPage={state.activeSection === 'shop'}>
+    <SidebarContainer>
       <Logo>
       <h1>pomoverse</h1>
       </Logo>

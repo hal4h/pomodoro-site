@@ -71,7 +71,7 @@ const PointsDisplay = styled.div`
   background: rgba(255,255,255,0.1);
   padding: 0.75rem 1.5rem;
   border-radius: 999px;
-  color: #d97706;
+  color: #f59e0b;
   font-weight: 600;
   font-size: 1.1rem;
 `;
@@ -107,6 +107,7 @@ const InfoModal = styled.div`
   width: 90%;
   box-shadow: 0 8px 32px rgba(0,0,0,0.15);
   z-index: 1000;
+  color: rgba(1, 1, 1, 1);
 `;
 
 const ModalOverlay = styled.div`
@@ -117,12 +118,9 @@ const ModalOverlay = styled.div`
 `;
 
 const ShopContainer = styled.div`
-  width: 100%;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 1rem;
-  box-sizing: border-box;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
+  padding: 2.5rem 1rem 1rem 1rem;
 `;
 
 const pixelArtBackgrounds = [
@@ -226,8 +224,8 @@ const Shop = () => {
       
       {showInfo && (
         <ModalOverlay onClick={() => setShowInfo(false)}>
-          <InfoModal onClick={e => e.stopPropagation()}>
-            <h3 style={{ marginBottom: '1rem', color: '#333' }}>About Pomoverse</h3>
+          <InfoModal onClick={e => e.stopPropagation()}> 
+            <h3 style={{ marginBottom: '1rem', color: '#6366f1' }}>About Pomoverse</h3>
             <div style={{ lineHeight: '1.6', marginBottom: '1rem' }}>
               <p><strong>What is Pomodoro?</strong></p>
               <p>The Pomodoro Technique is a time management method that uses focused work sessions (typically 25 minutes) followed by short breaks. This helps maintain concentration and prevents burnout.</p>
