@@ -102,8 +102,8 @@ const ModeRow = styled.div`
 `;
 
 const ModeButton = styled(PillButton)`
-  background: ${({ active }) => (active ? '#ffe3ec' : '#f1f1f1')};
-  color: ${({ active }) => (active ? '#6366f1' : '#222')};
+  background: ${({ active }) => (active ? '#e6b3c3' : '#e0e0e0')};
+  color: ${({ active }) => (active ? '#4c1d95' : '#1a1a1a')};
   font-weight: 600;
 `;
 
@@ -191,8 +191,8 @@ const Timer = () => {
             <div style={{ color: '#aaa', fontSize: '1.1rem', marginBottom: '0.5rem' }}>No current task</div>
             <button
               style={{
-                background: '#ffe3ec',
-                color: getDarkerAccentColor(state.backgroundColor),
+                background: '#e6b3c3',
+                color: '#4c1d95',
                 border: 'none',
                 borderRadius: '999px',
                 padding: '0.5rem 1.5rem',

@@ -5,7 +5,7 @@ import { useApp } from '../../context/AppContext';
 import { getDarkerShade } from '../../utils/colorUtils';
 
 const SidebarContainer = styled.aside`
-  width: 100px;
+  width: ${({ isShopPage }) => isShopPage ? '120px' : '100px'};
   background: rgba(255,255,255,0.5);
   backdrop-filter: blur(8px);
   border-right: none;
@@ -15,7 +15,7 @@ const SidebarContainer = styled.aside`
   align-items: center;
   gap: 2.5rem;
   @media (max-width: 700px) {
-    width: 56px;
+    width: ${({ isShopPage }) => isShopPage ? '80px' : '56px'};
     padding: 1rem 0;
     gap: 1.2rem;
   }
@@ -86,7 +86,7 @@ const PointsDisplay = styled.div`
   .points-value {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #f59e0b;
+    color: #d97706;
     display: flex;
     align-items: center;
     gap: 0.3rem;
@@ -105,7 +105,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <SidebarContainer>
+    <SidebarContainer isShopPage={state.activeSection === 'shop'}>
       <Logo>
       <h1>pomoverse</h1>
       </Logo>

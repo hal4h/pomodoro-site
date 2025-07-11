@@ -29,7 +29,7 @@ const StepContainer = styled.div`
 `;
 
 const StepTitle = styled.h2`
-  color: #6366f1;
+  color: #333;
   margin-bottom: 1rem;
   font-size: 1.5rem;
 `;

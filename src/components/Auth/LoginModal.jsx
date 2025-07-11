@@ -145,7 +145,7 @@ const LoginModal = ({ onClose }) => {
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={e => e.stopPropagation()}>
-        <h2 style={{ marginBottom: '1.5rem', textAlign: 'center', color: '#6366f1' }}>
+        <h2 style={{ marginBottom: '1.5rem', textAlign: 'center', color: '#333' }}>
           {isSignUp ? 'Create Account' : 'Welcome to Pomoverse'}
         </h2>
         

@@ -21,8 +21,8 @@ const UserName = styled.span`
 `;
 
 const Points = styled.span`
-  background: #f8e1e7;
-  color: #f59e0b;
+  background: #e6b3c3;
+  color: #d97706;
   border-radius: 999px;
   padding: 0.3em 1em;
   font-weight: 600;

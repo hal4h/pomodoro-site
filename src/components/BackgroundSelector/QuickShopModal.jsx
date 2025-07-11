@@ -80,7 +80,7 @@ const QuickShopModal = ({ onClose }) => {
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={e => e.stopPropagation()}>
-        <h3>Unlocked Backgrounds</h3>
+        <h3 style={{ color: '#333', marginBottom: '1rem' }}>Unlocked Backgrounds</h3>
         {unlockedBackgrounds.length === 0 ? (
           <div style={{ color: '#666', marginBottom: '1rem' }}>
             No backgrounds unlocked yet
