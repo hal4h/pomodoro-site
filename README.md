@@ -116,12 +116,6 @@ npm run dev
 - **Real-time Subscriptions** - Live data updates
 - **Supabase Auth** - Authentication system
 
-### Development Tools
-- **ESLint** - Code linting and formatting
-- **Git** - Version control
-- **Vercel** - Deployment platform
-- **LocalStorage** - Offline data persistence
-
 ### Design & UX
 - **Pastel Color System** - Consistent design language
 - **Responsive Design** - Mobile-first approach
@@ -142,11 +136,6 @@ npm run dev
 - **Automatic Indexing** - Optimized queries
 - **Data Triggers** - Automated point calculations
 
-## 🚀 Deployment
-
-### Vercel Deployment
-1. Connect your GitHub repository to Vercel
-2. Add environment variables in Vercel dashboard
 3. Deploy automatically on push to main branch
 
 ### Environment Variables
@@ -154,13 +143,6 @@ npm run dev
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
-
-## 📈 Performance Metrics
-
-- **Bundle Size**: ~425KB (gzipped)
-- **Lighthouse Score**: 95+ across all metrics
-- **First Contentful Paint**: <1.5s
-- **Time to Interactive**: <2.5s
 
 ## 🤝 Contributing
 
@@ -181,11 +163,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Supabase** - Backend infrastructure and real-time features
 - **Vercel** - Deployment and hosting platform
 - **React Community** - Open source contributions and documentation
-
-## 📞 Support
-
-For support, email support@pomoverse.app or create an issue in this repository.
-
----
-
-**Built with ❤️ and ☕ by [Your Name]**
